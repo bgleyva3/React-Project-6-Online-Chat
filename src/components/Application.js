@@ -18,7 +18,7 @@ const Application = () => {
     useEffect(() => {
         const encoded = encodeURI(login_item)
         if(login_item){
-            setClient(new W3CWebSocket('ws://acapp.herokuapp.com/ws', ['token', encoded]))
+            setClient(new W3CWebSocket('wss://acapp.herokuapp.com/ws', ['token', encoded]))
         }
     }, [login_item])
 
@@ -69,14 +69,10 @@ const Application = () => {
 
     const handleSendMessage = (message) => {
         reset()
-        console.log(message)
-        console.log(SOCKET_OBJ_2)
-
         const messageObj = {...SOCKET_OBJ_2, ...message}
         messageObj.target.id = roomID
         messageObj.target.name = roomName
         client.send(JSON.stringify(messageObj))
-
     }
 
     useEffect(()=>{
@@ -88,8 +84,8 @@ const Application = () => {
 
 //--------------------------------------------------
 
-    const listMessages = allMessages.map(value => {
-        return <p>{value}</p>
+    const listMessages = allMessages.map((value, index) => {
+        return <p key={index}>{value}</p>
     })
 
     return(
