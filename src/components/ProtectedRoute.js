@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux'
 
 const ProtectedRoute = ({ children, ...props }) => {
     
-    const login_access = useSelector(state => state.login_access)
+    const login_item = useSelector(state => state.login_item)
 
     return (
       <Route
         {...props}
         render={({ location }) =>
-          login_access ? (
+          login_item ? (
             children
           ) : (
             <Redirect

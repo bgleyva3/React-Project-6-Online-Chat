@@ -1,33 +1,36 @@
-import { createStore } from 'redux'
-
-const INITIAL_STATE = { 
-    login_petition: false,
-    login_access: false,
-    loading: false
+const initState = { 
+    login_item: null,
+    loading: false,
+    error: null
 }
 
-const reducer = ( state = INITIAL_STATE, action ) => {
+const reducer = ( state = initState, action ) => {
     switch(action.type){
-        case 'login_petition':
+        case 'FETCH_LOGIN_REQUEST':
             return {
                 ...state,
-                login_petition: action.payload,
-                loading: action.payload
+                loading: true,
+                error: null
             }
-        case 'login_access':
+        case 'FETCH_LOGIN_SUCCESS':
             return {
                 ...state,
-                login_access: true,
-                loading: false
+                loading: false,
+                login_item: action.payload,
+                error: null
+            }
+        case 'FETCH_LOGIN_FAILURE':
+            return {
+              ...state,
+              loading: false,
+              error: action.payload
             }
         default:
             return state
     }
 }
 
-const store = createStore(reducer)
-
-export default store;
+export default reducer;
 
 
 /* 

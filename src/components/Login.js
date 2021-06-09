@@ -1,59 +1,35 @@
 import { useForm } from "react-hook-form"
 import { useSelector, useDispatch } from 'react-redux'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useHistory } from 'react-router'
 import Loading from './Loading'
+import { fetchLogin } from '../actions/actions'
 
 const Login = () => {
-    const [loginResponse, setLoginResponse] = useState(null)
-    const [loginObj, setLoginObj] = useState(null)
-   
+      
     const history = useHistory() 
     const {handleSubmit, register, reset} = useForm()
     
     const dispatch = useDispatch()
-    const login_petition = useSelector(state => state.login_petition)
-    const login_access = useSelector(state => state.login_access)
+    const login_item = useSelector(state => state.login_item)
+    const error = useSelector(state => state.error)
     const loading = useSelector(state => state.loading)
 
 
-    const handleLogin = (e) => {
-        setLoginObj(e)
+    const handleLogin = (loginObj) => {
         reset()
-        dispatch({ type: 'login_petition', payload: true })
+        dispatch(fetchLogin(loginObj))
     }
 
     useEffect(() => {
-        if(login_petition){
-            console.log(loginObj)
-            fetch("https://acapp.herokuapp.com/login", {
-                method: "POST",
-                body: JSON.stringify(loginObj),
-                headers: new Headers().set("content-type", "application/json")
-            })
-            .then(res => res.json())
-            .then(data => (
-                setLoginResponse(data),
-                console.log(data)
-                ))
-        }
-    }, [login_petition])
-
-    useEffect(() => {
-        if(loginResponse){
-            if(loginResponse.access_token){
-                dispatch({ type: 'login_access' })
-            }
-            dispatch({ type: 'login_petition', payload: false })
-        }
-    }, [loginResponse])
-
-    useEffect(() => {
-        if(login_access){
-            console.log(login_access)
+        if(login_item){
+            console.log(login_item)
             history.push("/home")
+        } else if(error){
+            console.log(error)
         }
-    }, [login_access])
+    }, [login_item, error, history])
+
 
     return (
         <div>
