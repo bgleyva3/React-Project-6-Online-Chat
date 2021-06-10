@@ -6,28 +6,70 @@
   background-color: wheat;
 }
 
+.room-title{
+  margin: 0.5rem;
+}
+
 .message-form{
   display: flex;
   justify-content: center;
   align-items: unset;
 }
 
+.connected{
+  margin-bottom: 0.5rem;
+  margin-left: 0.5rem;
+  display: flex;
+}
+
+.connected span {
+  color: rgb(0, 190, 0);
+  margin-right: 0.4rem;
+}
+
 .box-chatting{
   display: flex;
   flex-direction: column-reverse;
-  align-items: center;
   background-color: thistle;
   height: 16rem;
   overflow: scroll;
   overflow-x: hidden;
 }
 
+/* .messages-to-center{
+  align-items: center;
+}
+
+.messages-to-right{
+  align-items: flex-end;
+}
+
+.messages-to-left{
+  align-items: flex-start;
+} */
+
+.notification-style{
+  color: rgba(0, 0, 0, 0.70);
+  font-size: 0.7rem;
+}
+
 .messages-style{
-  background-color: white;
   margin-top: 4px;
 }
 
+.messages-to-right{
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+.messages-to-left{
+  margin-left: 0.5rem;
+  margin-right: auto;
+}
+
 .senders-style{
-  background-color: blue;
-  margin: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
 }

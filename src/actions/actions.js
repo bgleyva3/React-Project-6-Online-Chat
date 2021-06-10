@@ -6,10 +6,9 @@ export const fetchLogin = (loginObj) => (dispatch) => {
     return axios({
             url: "https://acapp.herokuapp.com/login",
             method: 'POST',
-            data: loginObj,
-            
+            data: loginObj       
         })
-        .then(res => dispatch({ type: 'FETCH_LOGIN_SUCCESS', payload: res.data.access_token }))
+        .then(res => dispatch({ type: 'FETCH_LOGIN_SUCCESS', payload: res.data }))
         .catch(error => dispatch({ type: 'FETCH_LOGIN_FAILURE', payload: error.message }))
 }
 

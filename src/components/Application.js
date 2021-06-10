@@ -10,12 +10,14 @@ const Application = () => {
     const [allMessages, setAllMessages] = useState([])
     const [allSenders, setAllSenders] = useState([])
     const [conversation, setConversation] = useState([])
+    const [messagesPosition, setMessagesPosition] = useState([])
+    const [connectedUsers, setConnectedUsers] = useState([])
 
     const {handleSubmit, register, reset} = useForm()
 
     const dispatch = useDispatch()
     const login_item = useSelector(state => state.login_item)
-
+    const user_id = useSelector(state => state.user_id)
     
     useEffect(() => {
         const encoded = encodeURI(login_item)
@@ -42,6 +44,9 @@ const Application = () => {
                 console.log("Open")
                 client.send(JSON.stringify(SOCKET_OBJ))
                 client.onmessage = e => {
+                    if(JSON.parse(e.data).action === "user-join"){
+                        setConnectedUsers(prev => [...prev, JSON.parse(e.data).sender.name + ', '])
+                    }
                     if(JSON.parse(e.data).action === "room-joined"){
                         setRoomID(JSON.parse(e.data).target.id)
                         setRoomName(JSON.parse(e.data).target.name)
@@ -50,12 +55,18 @@ const Application = () => {
                         setAllMessages(prev => [JSON.parse(e.data).message, ...prev])
                         if("sender" in JSON.parse(e.data)){
                             if(JSON.parse(e.data).sender){
+                                console.log("-1-")
                                 setAllSenders(prev => [JSON.parse(e.data).sender.name + ':', ...prev])
+                                setMessagesPosition(prev => [JSON.parse(e.data).sender.id, ...prev])
                             } else {
+                                console.log("-2-")
                                 setAllSenders(prev => [' ', ...prev])
+                                setMessagesPosition(prev => [' ', ...prev])
                             }
                         } else {
+                            console.log("-3-")
                             setAllSenders(prev => [' ', ...prev])
+                            setMessagesPosition(prev => [' ', ...prev])
                         }
                         
                     }
@@ -89,7 +100,10 @@ const Application = () => {
 
     useEffect(()=>{
         if(allMessages){
-            console.log(allMessages)
+            //tienen delay
+            /* console.log(allMessages)
+            console.log(allSenders)
+            console.log(messagesPosition) */
         }
     }, [allMessages])
 
@@ -97,28 +111,43 @@ const Application = () => {
 //--------------------------------------------------
     
     const listMessages = allMessages.map((value, index) => {
-        return <p className="messages-style" key={index}>{value}</p>
+        if(messagesPosition[index] == user_id){
+            return <p className="messages-style messages-to-right" key={index}>{value}</p>
+        } else if (typeof(messagesPosition[index]) === "number" && messagesPosition[index] !== user_id){
+            return <p className="messages-style messages-to-left" key={index}>{value}</p>
+        } else {
+            return <p className="messages-style notification-style" key={index}>{value}</p>
+        }
     })
     
     const listSenders = allSenders.map((value, index) => {
-        return <p className="senders-style" key={(index + 1) * (-1)}>{value}</p>
+        
+        if(messagesPosition[index] == user_id){
+            return <p className="senders-style messages-to-right" key={(index + 1) * (-1)}>{value}</p>
+        } else if (typeof(messagesPosition[index]) === "number" && messagesPosition[index] !== user_id){
+            return <p className="senders-style messages-to-left" key={(index + 1) * (-1)}>{value}</p>
+        } else {
+            return <p className="senders-style " key={(index + 1) * (-1)}>{value}</p>
+        }
     })
 
 
     useEffect(() => {
-        if(allSenders){
+        if(messagesPosition){
             let newArr = []
             for(let i=0; i < listMessages.length; i++){
                 newArr.push(listMessages[i])
                 newArr.push(listSenders[i])
             }
+            //console.log(user_id)
             console.log("-----------------")
-            console.log(listSenders)
-            console.log(listMessages)
+            console.log(allMessages)
+            console.log(allSenders)
+            console.log(messagesPosition)
             console.log("-----------------")
             setConversation(newArr)
         }
-    }, [allSenders])
+    }, [messagesPosition])
 
 
     /* const listConversation = () => {
@@ -135,7 +164,11 @@ const Application = () => {
         <div>
             <h3>ROOMS:</h3>
             <div className="room-container">
-                { roomName && <h1>{roomName}</h1> }
+                { roomName && <h1 className="room-title">{roomName}</h1> }
+                <div className="connected">
+                <span>● </span>
+                {connectedUsers}
+                </div>
                 <div className="box-chatting">
                     { conversation }
                 </div>

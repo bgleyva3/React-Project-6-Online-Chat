@@ -1,5 +1,6 @@
 const initState = { 
     login_item: null,
+    user_id: null,
     loading: false,
     error: null
 }
@@ -16,7 +17,8 @@ const reducer = ( state = initState, action ) => {
             return {
                 ...state,
                 loading: false,
-                login_item: action.payload,
+                login_item: action.payload.access_token,
+                user_id: action.payload.userId,
                 error: null
             }
         case 'FETCH_LOGIN_FAILURE':
