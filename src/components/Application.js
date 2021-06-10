@@ -8,6 +8,8 @@ const Application = () => {
     const [roomID, setRoomID] = useState(null)
     const [roomName, setRoomName] = useState(null)
     const [allMessages, setAllMessages] = useState([])
+    const [allSenders, setAllSenders] = useState([])
+    const [conversation, setConversation] = useState([])
 
     const {handleSubmit, register, reset} = useForm()
 
@@ -46,6 +48,16 @@ const Application = () => {
                     }
                     if(JSON.parse(e.data).action === "send-message"){
                         setAllMessages(prev => [JSON.parse(e.data).message, ...prev])
+                        if("sender" in JSON.parse(e.data)){
+                            if(JSON.parse(e.data).sender){
+                                setAllSenders(prev => [JSON.parse(e.data).sender.name + ':', ...prev])
+                            } else {
+                                setAllSenders(prev => [' ', ...prev])
+                            }
+                        } else {
+                            setAllSenders(prev => [' ', ...prev])
+                        }
+                        
                     }
                     console.log(JSON.parse(e.data))
                 }
@@ -83,10 +95,41 @@ const Application = () => {
 
 
 //--------------------------------------------------
-
+    
     const listMessages = allMessages.map((value, index) => {
-        return <p key={index}>{value}</p>
+        return <p className="messages-style" key={index}>{value}</p>
     })
+    
+    const listSenders = allSenders.map((value, index) => {
+        return <p className="senders-style" key={(index + 1) * (-1)}>{value}</p>
+    })
+
+
+    useEffect(() => {
+        if(allSenders){
+            let newArr = []
+            for(let i=0; i < listMessages.length; i++){
+                newArr.push(listMessages[i])
+                newArr.push(listSenders[i])
+            }
+            console.log("-----------------")
+            console.log(listSenders)
+            console.log(listMessages)
+            console.log("-----------------")
+            setConversation(newArr)
+        }
+    }, [allSenders])
+
+
+    /* const listConversation = () => {
+        let newArr = [];
+        for(let i=0; i < listMessages.length; i++){
+            newArr.push(listSenders[i])
+            newArr.push(listMessages[i])
+        }
+        console.log(newArr)
+        return <p className="messages-style" >asdsad</p>
+    } */
 
     return(
         <div>
@@ -94,7 +137,7 @@ const Application = () => {
             <div className="room-container">
                 { roomName && <h1>{roomName}</h1> }
                 <div className="box-chatting">
-                    { listMessages }
+                    { conversation }
                 </div>
                 { roomID && 
                         <form className="message-form" onSubmit={handleSubmit((e) => handleSendMessage(e,reset))} >

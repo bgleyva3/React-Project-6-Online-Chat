@@ -15,8 +15,19 @@
 .box-chatting{
   display: flex;
   flex-direction: column-reverse;
+  align-items: center;
   background-color: thistle;
   height: 16rem;
   overflow: scroll;
   overflow-x: hidden;
+}
+
+.messages-style{
+  background-color: white;
+  margin-top: 4px;
+}
+
+.senders-style{
+  background-color: blue;
+  margin: 0;
 }
