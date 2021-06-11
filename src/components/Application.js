@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { w3cwebsocket as W3CWebSocket } from "websocket"
 import { useForm } from "react-hook-form"
+import { chatStates } from '../actions/actions'
 
 const Application = () => {
     const [client, setClient] = useState(null)
@@ -16,8 +17,8 @@ const Application = () => {
     const {handleSubmit, register, reset} = useForm()
 
     const dispatch = useDispatch()
-    const login_item = useSelector(state => state.login_item)
-    const user_id = useSelector(state => state.user_id)
+    const login_item = useSelector(state => state.loginReducer.login_item)
+    const user_id = useSelector(state => state.loginReducer.user_id)
     
     useEffect(() => {
         const encoded = encodeURI(login_item)

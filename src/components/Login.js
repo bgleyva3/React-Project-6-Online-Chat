@@ -11,9 +11,9 @@ const Login = () => {
     const {handleSubmit, register, reset} = useForm()
     
     const dispatch = useDispatch()
-    const login_item = useSelector(state => state.login_item)
-    const error = useSelector(state => state.error)
-    const loading = useSelector(state => state.loading)
+    const login_item = useSelector(state => state.loginReducer.login_item)
+    const error = useSelector(state => state.loginReducer.error)
+    const loading = useSelector(state => state.loginReducer.loading)
 
 
     const handleLogin = (loginObj) => {

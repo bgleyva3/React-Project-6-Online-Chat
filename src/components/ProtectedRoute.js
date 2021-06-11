@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 const ProtectedRoute = ({ children, ...props }) => {
     
-    const login_item = useSelector(state => state.login_item)
+    const login_item = useSelector(state => state.loginReducer.login_item)
 
     return (
       <Route
