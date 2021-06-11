@@ -12,8 +12,4 @@ export const fetchLogin = (loginObj) => (dispatch) => {
         .catch(error => dispatch({ type: 'FETCH_LOGIN_FAILURE', payload: error.message }))
 }
 
-export const chatStates = () => () => {
-    
-}
-
 

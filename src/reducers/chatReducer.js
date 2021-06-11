@@ -29,12 +29,12 @@ const chatReducer = ( state = initState, action ) => {
         case 'SET_ALL_MESSAGES':
             return {
                 ...state,
-                allMessages: action.payload,
+                allMessages: [action.payload, ...state.allMessages],
             }
         case 'SET_ALL_SENDERS':
             return {
                 ...state,
-                allSenders: action.payload,
+                allSenders: [action.payload, ...state.allSenders],
             }
         case 'SET_CONVERSATION':
             return {
@@ -44,12 +44,12 @@ const chatReducer = ( state = initState, action ) => {
         case 'SET_MESSAGES_POSITION':
             return {
                 ...state,
-                messagesPosition: action.payload,
+                messagesPosition: [action.payload, ...state.messagesPosition],
             }
         case 'SET_CONNECTED_USERS':
             return {
                 ...state,
-                connectedUsers: action.payload,
+                connectedUsers: [...state.connectedUsers, action.payload],
             }
         default:
             return state

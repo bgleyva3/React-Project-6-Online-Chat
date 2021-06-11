@@ -2,28 +2,37 @@ import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { w3cwebsocket as W3CWebSocket } from "websocket"
 import { useForm } from "react-hook-form"
-import { chatStates } from '../actions/actions'
 
 const Application = () => {
-    const [client, setClient] = useState(null)
+    /* const [client, setClient] = useState(null)
     const [roomID, setRoomID] = useState(null)
     const [roomName, setRoomName] = useState(null)
     const [allMessages, setAllMessages] = useState([])
     const [allSenders, setAllSenders] = useState([])
     const [conversation, setConversation] = useState([])
     const [messagesPosition, setMessagesPosition] = useState([])
-    const [connectedUsers, setConnectedUsers] = useState([])
+    const [connectedUsers, setConnectedUsers] = useState([]) */
 
     const {handleSubmit, register, reset} = useForm()
 
     const dispatch = useDispatch()
     const login_item = useSelector(state => state.loginReducer.login_item)
     const user_id = useSelector(state => state.loginReducer.user_id)
-    
+
+    const client = useSelector(state => state.chatReducer.client)
+    const roomID = useSelector(state => state.chatReducer.roomID)
+    const roomName = useSelector(state => state.chatReducer.roomName)
+    const allMessages = useSelector(state => state.chatReducer.allMessages)
+    const allSenders = useSelector(state => state.chatReducer.allSenders)
+    const conversation = useSelector(state => state.chatReducer.conversation)
+    const messagesPosition = useSelector(state => state.chatReducer.messagesPosition)
+    const connectedUsers = useSelector(state => state.chatReducer.connectedUsers)
+
     useEffect(() => {
         const encoded = encodeURI(login_item)
         if(login_item){
-            setClient(new W3CWebSocket('wss://acapp.herokuapp.com/ws', ['token', encoded]))
+            let data = new W3CWebSocket('wss://acapp.herokuapp.com/ws', ['token', encoded])
+            dispatch({ type: 'SET_CLIENT', payload: data })
         }
     }, [login_item])
 
@@ -46,28 +55,35 @@ const Application = () => {
                 client.send(JSON.stringify(SOCKET_OBJ))
                 client.onmessage = e => {
                     if(JSON.parse(e.data).action === "user-join"){
-                        setConnectedUsers(prev => [...prev, JSON.parse(e.data).sender.name + ', '])
+                        dispatch({ type: 'SET_CONNECTED_USERS', payload: JSON.parse(e.data).sender.name + ', ' })
                     }
                     if(JSON.parse(e.data).action === "room-joined"){
-                        setRoomID(JSON.parse(e.data).target.id)
-                        setRoomName(JSON.parse(e.data).target.name)
+                        dispatch({ type: 'SET_ROOM_ID', payload: JSON.parse(e.data).target.id })
+                        dispatch({ type: 'SET_ROOM_NAME', payload: JSON.parse(e.data).target.name })
                     }
                     if(JSON.parse(e.data).action === "send-message"){
-                        setAllMessages(prev => [JSON.parse(e.data).message, ...prev])
+                        dispatch({ type: 'SET_ALL_MESSAGES', payload: JSON.parse(e.data).message })
+                        //setAllMessages(prev => [JSON.parse(e.data).message, ...prev])
                         if("sender" in JSON.parse(e.data)){
                             if(JSON.parse(e.data).sender){
                                 console.log("-1-")
-                                setAllSenders(prev => [JSON.parse(e.data).sender.name + ':', ...prev])
-                                setMessagesPosition(prev => [JSON.parse(e.data).sender.id, ...prev])
+                                dispatch({ type: 'SET_ALL_SENDERS', payload: JSON.parse(e.data).sender.name + ':' })
+                                //setAllSenders(prev => [JSON.parse(e.data).sender.name + ':', ...prev])
+                                dispatch({ type: 'SET_MESSAGES_POSITION', payload: JSON.parse(e.data).sender.id })
+                                //setMessagesPosition(prev => [JSON.parse(e.data).sender.id, ...prev])
                             } else {
                                 console.log("-2-")
-                                setAllSenders(prev => [' ', ...prev])
-                                setMessagesPosition(prev => [' ', ...prev])
+                                dispatch({ type: 'SET_ALL_SENDERS', payload: ' ' })
+                                //setAllSenders(prev => [' ', ...prev])
+                                dispatch({ type: 'SET_MESSAGES_POSITION', payload: ' ' })
+                                //setMessagesPosition(prev => [' ', ...prev])
                             }
                         } else {
                             console.log("-3-")
-                            setAllSenders(prev => [' ', ...prev])
-                            setMessagesPosition(prev => [' ', ...prev])
+                            dispatch({ type: 'SET_ALL_SENDERS', payload: ' ' })
+                            //setAllSenders(prev => [' ', ...prev])
+                            dispatch({ type: 'SET_MESSAGES_POSITION', payload: ' ' })
+                            //setMessagesPosition(prev => [' ', ...prev])
                         }
                         
                     }
@@ -146,7 +162,8 @@ const Application = () => {
             console.log(allSenders)
             console.log(messagesPosition)
             console.log("-----------------")
-            setConversation(newArr)
+            dispatch({ type: 'SET_CONVERSATION', payload: newArr })
+            //setConversation(newArr)
         }
     }, [messagesPosition])
 
