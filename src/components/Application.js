@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { w3cwebsocket as W3CWebSocket } from "websocket"
 import { useForm } from "react-hook-form"
+import RoomInput from './RoomInput'
 
 const Application = () => {
     /* const [client, setClient] = useState(null)
@@ -19,6 +20,7 @@ const Application = () => {
     const login_item = useSelector(state => state.loginReducer.login_item)
     const user_id = useSelector(state => state.loginReducer.user_id)
 
+    const roomObj = useSelector(state => state.chatReducer.roomObj)
     const client = useSelector(state => state.chatReducer.client)
     const roomID = useSelector(state => state.chatReducer.roomID)
     const roomName = useSelector(state => state.chatReducer.roomName)
@@ -27,6 +29,7 @@ const Application = () => {
     const conversation = useSelector(state => state.chatReducer.conversation)
     const messagesPosition = useSelector(state => state.chatReducer.messagesPosition)
     const connectedUsers = useSelector(state => state.chatReducer.connectedUsers)
+    
 
     useEffect(() => {
         const encoded = encodeURI(login_item)
@@ -38,23 +41,20 @@ const Application = () => {
 
     
 //------------------------------------------------
-    const SOCKET_OBJ = {
-        "action": "join-room",
-        "message": "Mario Kart",
-        "target": null,
-        "sender": {
-        "id": 1,
-        "name": "Carlos Reyes" // Sender es un usuario o el sistema
-        }
-    }    
 
     useEffect(()=>{
-        if(client){
-            client.onopen = () => {
+        console.log("entra")
+        console.log(roomObj)
+        console.log(client)
+        if(client && roomObj){
+            console.log("entrooó")
+            //client.onopen = () => {
                 console.log("Open")
-                client.send(JSON.stringify(SOCKET_OBJ))
+                console.log(roomObj)
+                client.send(JSON.stringify(roomObj))
                 client.onmessage = e => {
-                    if(JSON.parse(e.data).action === "user-join"){
+                    if(JSON.parse(e.data).action === "join-room"){
+                        console.log("!!!!!")
                         dispatch({ type: 'SET_CONNECTED_USERS', payload: JSON.parse(e.data).sender.name + ', ' })
                     }
                     if(JSON.parse(e.data).action === "room-joined"){
@@ -89,9 +89,9 @@ const Application = () => {
                     }
                     console.log(JSON.parse(e.data))
                 }
-            }
+            //}
         }
-    }, [client])
+    }, [client, roomObj])
 
 
     const SOCKET_OBJ_2 = {
@@ -180,6 +180,7 @@ const Application = () => {
 
     return(
         <div>
+            <RoomInput />
             <h3>ROOMS:</h3>
             <div className="room-container">
                 { roomName && <h1 className="room-title">{roomName}</h1> }

@@ -1,4 +1,5 @@
 const initState = { 
+    roomObj: null,
     client: null,
     roomID: null,
     roomName: null,
@@ -11,6 +12,11 @@ const initState = {
 
 const chatReducer = ( state = initState, action ) => {
     switch(action.type){
+        case 'SET_ROOM_OBJ':
+            return {
+                ...state,
+                roomObj: action.payload,
+            }
         case 'SET_CLIENT':
             return {
                 ...state,
