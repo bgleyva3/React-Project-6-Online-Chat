@@ -7,7 +7,9 @@ const initState = {
     allSenders: [],
     conversation: [],
     messagesPosition: [],
-    connectedUsers: []
+    connectedUsers: [],
+    userLeft: null,
+    sesionClosed: null
 }
 
 const chatReducer = ( state = initState, action ) => {
@@ -53,9 +55,27 @@ const chatReducer = ( state = initState, action ) => {
                 messagesPosition: [action.payload, ...state.messagesPosition],
             }
         case 'SET_CONNECTED_USERS':
+            if(action.delete){
+                return {
+                    ...state,
+                    connectedUsers: action.payload,
+                }
+            } else {
+                return {
+                    ...state,
+                    connectedUsers: [...state.connectedUsers, action.payload],
+                }
+            }
+            
+        case 'SET_USER_LEFT':
             return {
                 ...state,
-                connectedUsers: [...state.connectedUsers, action.payload],
+                userLeft: action.payload
+            }
+        case 'SET_SESION_CLOSED':
+            return {
+                ...state,
+                sesionClosed: action.payload
             }
         default:
             return state

@@ -18,7 +18,6 @@ const RoomInput = () => {
     const handleEnterRoom = (e) => {
         reset()
         SOCKET_OBJ.message = e.message
-        console.log(SOCKET_OBJ)
         dispatch({ type: 'SET_ROOM_OBJ', payload: SOCKET_OBJ })
     }
 
