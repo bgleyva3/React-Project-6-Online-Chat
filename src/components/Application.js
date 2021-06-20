@@ -3,14 +3,15 @@ import { useSelector, useDispatch } from 'react-redux'
 import { w3cwebsocket as W3CWebSocket } from "websocket"
 import { useForm } from "react-hook-form"
 import RoomInput from './RoomInput'
-import ChatContainer from './ChatContainer'
+import Chat from './Chat'
 
 const Application = () => {
 
     const dispatch = useDispatch()
     const login_item = useSelector(state => state.loginReducer.login_item)
     const sesionClosed = useSelector(state => state.chatReducer.sesionClosed)
-
+    const roomObj = useSelector(state => state.chatReducer.roomObj)
+    const client = useSelector(state => state.chatReducer.client)
 
     useEffect(() => {
         const encoded = encodeURI(login_item)
@@ -31,9 +32,12 @@ const Application = () => {
                     </div>
                 </div>
             }
-            <RoomInput />
-            <h3>ROOMS:</h3>
-            <ChatContainer />
+            {client && <RoomInput />}
+            {roomObj ? 
+                <Chat />
+                :
+                <p>Enter any room name to create a new chat room or join an existing one</p>
+            }
         </div>
     )
 }

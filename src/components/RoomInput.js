@@ -1,9 +1,10 @@
 import { useForm } from "react-hook-form"
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 const RoomInput = () => {
     const dispatch = useDispatch()
     const {handleSubmit, register, reset} = useForm()
+
 
     const SOCKET_OBJ = {
         "action": "join-room",
@@ -15,6 +16,7 @@ const RoomInput = () => {
         }
     } 
 
+
     const handleEnterRoom = (e) => {
         reset()
         SOCKET_OBJ.message = e.message
@@ -23,7 +25,7 @@ const RoomInput = () => {
 
     return(
         <form onSubmit={handleSubmit((e) => handleEnterRoom(e,reset))} >
-            <input placeholder="Enter any room name" {...register("message", { required: true })} ></input>
+            <input placeholder="Room name" {...register("message", { required: true })} ></input>
             <button type="submit">Enter</button>
         </form>
     )

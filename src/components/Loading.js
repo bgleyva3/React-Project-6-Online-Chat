@@ -4,7 +4,7 @@ import Loader from 'react-loader-spinner'
 
 const Loading = () => {
     return (
-        <div align='center'>
+        <div className="loading-container" align='center'>
             <Loader type="TailSpin" color="#00BFFF" height={80} width={80} />
         </div>
     )

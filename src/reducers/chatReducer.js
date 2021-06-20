@@ -8,16 +8,22 @@ const initState = {
     conversation: [],
     messagesPosition: [],
     connectedUsers: [],
+    leaveOldRoom: [],
     userLeft: null,
-    sesionClosed: null
+    sesionClosed: null,
+    loading: false,
+    initialFlag: false
 }
 
 const chatReducer = ( state = initState, action ) => {
     switch(action.type){
         case 'SET_ROOM_OBJ':
             return {
-                ...state,
+                ...initState,
+                client: state.client,
                 roomObj: action.payload,
+                loading: true
+
             }
         case 'SET_CLIENT':
             return {
@@ -66,7 +72,11 @@ const chatReducer = ( state = initState, action ) => {
                     connectedUsers: [...state.connectedUsers, action.payload],
                 }
             }
-            
+        case 'LEAVE_OLD_ROOM':
+            return{
+                ...state,
+                leaveOldRoom: action.payload
+            }
         case 'SET_USER_LEFT':
             return {
                 ...state,
@@ -76,6 +86,16 @@ const chatReducer = ( state = initState, action ) => {
             return {
                 ...state,
                 sesionClosed: action.payload
+            }
+        case 'SET_LOADING':
+            return {
+                ...state,
+                loading: action.payload
+            }
+        case 'SET_INITIAL_FLAG':
+            return {
+                ...state,
+                initialFlag: true
             }
         default:
             return state

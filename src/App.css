@@ -48,6 +48,17 @@
   align-items: flex-start;
 } */
 
+.loading-container{
+  position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding-top: 25vh
+}
+
 .notification-style{
   color: rgba(0, 0, 0, 0.70);
   font-size: 0.7rem;
@@ -100,4 +111,10 @@
                   1px -1px 0 #000000, 
                  -1px 1px 0 #000000, 
                   1px 1px 0 #000000;
+}
+
+.register{
+  cursor: pointer;
+  color: rgb(12, 12, 177);
+  text-decoration: underline;
 }

@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useForm } from "react-hook-form"
+import Loading from './Loading'
 
 
 const Chat = () => {
@@ -20,44 +21,81 @@ const Chat = () => {
     const messagesPosition = useSelector(state => state.chatReducer.messagesPosition)
     const connectedUsers = useSelector(state => state.chatReducer.connectedUsers)
     const userLeft = useSelector(state => state.chatReducer.userLeft)
+    //const leaveOldRoom = useSelector(state => state.chatReducer.leaveOldRoom)
+    const loading = useSelector(state => state.chatReducer.loading)
+    //const initialFlag = useSelector(state => state.chatReducer.initialFlag)
+    const estado = useSelector(state => state.chatReducer)
+
+    const [initialFlag, setInitialFLag] = useState(false)
+    const [reconfirm, setReconfirm] = useState(false)
+
+    /* const SOCKET_LEAVE_ROOM = {
+        "action": "leave-room",
+        "message": "Mario Kart",
+        "target": null,
+        "sender": {
+        "id": 1,
+        "name": "Carlos Reyes" // Sender es un usuario o el sistema
+        }
+    }  */
+
+    /* const leaveRoom = () => {
+        SOCKET_LEAVE_ROOM.message = leaveOldRoom
+        SOCKET_LEAVE_ROOM.target = {id: roomID, name: roomName}
+        console.log(SOCKET_LEAVE_ROOM)
+        client.send(JSON.stringify(SOCKET_LEAVE_ROOM))
+        client.send(JSON.stringify({ action: 'leave-room', message: "Mario Kart" }))
+    } */
 
     useEffect(()=>{
-
-        if(client && roomObj){
-                client.send(JSON.stringify(roomObj))
+        console.log("-------------------")
+        console.log(estado)
+        console.log("-------------------")
+        /* SOCKET_LEAVE_ROOM.message = leaveOldRoom
+        client.send(JSON.stringify(SOCKET_LEAVE_ROOM)) */
+        if(client){
+                console.log(roomObj)
+            
                 client.onmessage = e => {
+                    if(JSON.parse(e.data).target){
+                        console.log(JSON.parse(e.data).target.name)
+                    }
+                    console.log("ENTRÖ")
+                    console.log(e.data)
                     console.log(JSON.parse(e.data))
                     if(JSON.parse(e.data).action === "room-joined"){
                         dispatch({ type: 'SET_ROOM_ID', payload: JSON.parse(e.data).target.id })
                         dispatch({ type: 'SET_ROOM_NAME', payload: JSON.parse(e.data).target.name })
+                        dispatch({ type: 'SET_CONNECTED_USERS', payload: JSON.parse(e.data) })
                     }
                     if(JSON.parse(e.data).action === "user-left"){
                         dispatch({ type: 'SET_USER_LEFT', payload: JSON.parse(e.data).sender.name + ', ' })
                     }
-                    if(JSON.parse(e.data).action === "send-message"){
-                        dispatch({ type: 'SET_ALL_MESSAGES', payload: JSON.parse(e.data).message })
-                        if(JSON.parse(e.data).message.indexOf(' joined') > -1){
-                            let endIndex = JSON.parse(e.data).message.indexOf(' joined')
-                            console.log(JSON.parse(e.data).message.slice(0, endIndex))
-                            dispatch({ type: 'SET_CONNECTED_USERS', payload: JSON.parse(e.data).message.slice(0, endIndex) + ', ' , delete: false })
-                        }
-                        if("sender" in JSON.parse(e.data)){
-                            if(JSON.parse(e.data).sender){
-                                console.log("-1-")
-                                dispatch({ type: 'SET_ALL_SENDERS', payload: JSON.parse(e.data).sender.name + ':' })
-                                dispatch({ type: 'SET_MESSAGES_POSITION', payload: JSON.parse(e.data).sender.id })
+                    
+                        if(JSON.parse(e.data).action === "send-message"){
+                            dispatch({ type: 'SET_ALL_MESSAGES', payload: JSON.parse(e.data).message })
+                            if(JSON.parse(e.data).message.indexOf(' joined') > -1){
+                                let endIndex = JSON.parse(e.data).message.indexOf(' joined')
+                                console.log(JSON.parse(e.data).message.slice(0, endIndex))
+                                dispatch({ type: 'SET_CONNECTED_USERS', payload: JSON.parse(e.data).message.slice(0, endIndex) + ', ' , delete: false })
+                            }
+                            if("sender" in JSON.parse(e.data)){
+                                if(JSON.parse(e.data).sender){
+                                    console.log("-1-")
+                                    dispatch({ type: 'SET_ALL_SENDERS', payload: JSON.parse(e.data).sender.name + ':' })
+                                    dispatch({ type: 'SET_MESSAGES_POSITION', payload: JSON.parse(e.data).sender.id })
+                                } else {
+                                    console.log("-2-")
+                                    dispatch({ type: 'SET_ALL_SENDERS', payload: ' ' })
+                                    dispatch({ type: 'SET_MESSAGES_POSITION', payload: ' ' })
+                                }
                             } else {
-                                console.log("-2-")
+                                console.log("-3-")
                                 dispatch({ type: 'SET_ALL_SENDERS', payload: ' ' })
                                 dispatch({ type: 'SET_MESSAGES_POSITION', payload: ' ' })
                             }
-                        } else {
-                            console.log("-3-")
-                            dispatch({ type: 'SET_ALL_SENDERS', payload: ' ' })
-                            dispatch({ type: 'SET_MESSAGES_POSITION', payload: ' ' })
+
                         }
-                        
-                    }
                 }
                 client.onclose = e => {
                     console.log("//////////////////////")
@@ -66,7 +104,16 @@ const Chat = () => {
                     dispatch({ type: 'SET_SESION_CLOSED', payload: true })
                 }
         }
-    }, [client, roomObj])
+    }, [client])
+
+    useEffect(() => {
+        if(roomObj){
+            client.send(JSON.stringify(roomObj))
+            dispatch({ type: 'SET_LOADING', payload: false })
+        }
+    }, [roomObj])
+
+    
 
 
     const SOCKET_OBJ_2 = {
@@ -143,8 +190,9 @@ const Chat = () => {
 
     return(
         <div className="room-container">
+                { loading && <Loading /> }
                 { roomName && <h1 className="room-title">{roomName}</h1> }
-                {connectedUsers[0] ? 
+                { connectedUsers[0] ? 
                     <div className="connected">
                     <span className="connected">● </span>
                     <div>{connectedUsers}</div>
