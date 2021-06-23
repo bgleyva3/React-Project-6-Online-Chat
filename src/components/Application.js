@@ -1,194 +1,186 @@
-import { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { w3cwebsocket as W3CWebSocket } from "websocket"
-import { useForm } from "react-hook-form"
-import { chatStates } from '../actions/actions'
+import React, {useEffect, useState} from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom';
+import ChatRoom from './ChatRoom.js'
+const Application = ({register, handleSubmit, reset}) => {
+  const history = useHistory() 
+  const [client, setClient] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [roomsArr, setRoomsArr] = useState([]);
+  const accessToken = useSelector(state => state.accessToken)
+  const dispatch = useDispatch();
 
-const Application = () => {
-    const [client, setClient] = useState(null)
-    const [roomID, setRoomID] = useState(null)
-    const [roomName, setRoomName] = useState(null)
-    const [allMessages, setAllMessages] = useState([])
-    const [allSenders, setAllSenders] = useState([])
-    const [conversation, setConversation] = useState([])
-    const [messagesPosition, setMessagesPosition] = useState([])
-    const [connectedUsers, setConnectedUsers] = useState([])
 
-    const {handleSubmit, register, reset} = useForm()
+  useEffect(() => {
+    if (accessToken) {
+      const encoded = encodeURI(accessToken)
+      setClient(
+        new WebSocket('wss://acapp.herokuapp.com/ws', ['token', encoded])
+      )
+    }
+  }, [accessToken])
+  
 
-    const dispatch = useDispatch()
-    const login_item = useSelector(state => state.loginReducer.login_item)
-    const user_id = useSelector(state => state.loginReducer.user_id)
-    
-    useEffect(() => {
-        const encoded = encodeURI(login_item)
-        if(login_item){
-            setClient(new W3CWebSocket('wss://acapp.herokuapp.com/ws', ['token', encoded]))
+  // [client, roomsArr] dependencies
+  useEffect(() => {
+    if (client) {
+      
+      //--------------------------------------------
+      const handleChatMsg = msgObj => {
+        /* console.log(roomsArr)
+        console.log(msgObj) */
+        let room = {};
+        if(msgObj.target){
+          console.log("-1-")
+          room = findRoom(msgObj.target.id)
+        } else {
+          console.log("-2-")
+          /* console.log(roomsArr)
+          console.log(Object.keys(roomsArr)[0]) */
+          room = roomsArr[Object.keys(roomsArr)[0]]
         }
-    }, [login_item])
-
-    
-//------------------------------------------------
-    const SOCKET_OBJ = {
-        "action": "join-room",
-        "message": "Mario Kart",
-        "target": null,
-        "sender": {
-        "id": 1,
-        "name": "Carlos Reyes" // Sender es un usuario o el sistema
-        }
-    }    
-
-    useEffect(()=>{
-        if(client){
-            client.onopen = () => {
-                console.log("Open")
-                client.send(JSON.stringify(SOCKET_OBJ))
-                client.onmessage = e => {
-                    if(JSON.parse(e.data).action === "user-join"){
-                        setConnectedUsers(prev => [...prev, JSON.parse(e.data).sender.name + ', '])
-                    }
-                    if(JSON.parse(e.data).action === "room-joined"){
-                        setRoomID(JSON.parse(e.data).target.id)
-                        setRoomName(JSON.parse(e.data).target.name)
-                    }
-                    if(JSON.parse(e.data).action === "send-message"){
-                        setAllMessages(prev => [JSON.parse(e.data).message, ...prev])
-                        if("sender" in JSON.parse(e.data)){
-                            if(JSON.parse(e.data).sender){
-                                console.log("-1-")
-                                setAllSenders(prev => [JSON.parse(e.data).sender.name + ':', ...prev])
-                                setMessagesPosition(prev => [JSON.parse(e.data).sender.id, ...prev])
-                            } else {
-                                console.log("-2-")
-                                setAllSenders(prev => [' ', ...prev])
-                                setMessagesPosition(prev => [' ', ...prev])
-                            }
-                        } else {
-                            console.log("-3-")
-                            setAllSenders(prev => [' ', ...prev])
-                            setMessagesPosition(prev => [' ', ...prev])
-                        }
-                        
-                    }
-                    console.log(JSON.parse(e.data))
-                }
+        console.log(room)
+        room.messages = [msgObj, ...room.messages]
+        console.log(room.messages)
+        setRoomsArr(prev =>
+          prev.map(value => {
+            if (value.name === room.name) {
+              return room
             }
-        }
-    }, [client])
 
+            return value
+          })
+        )
+      }
 
-    const SOCKET_OBJ_2 = {
-        "action": "send-message",
-        "message": "Hola, profe",
-        "target": {
-          "id": "a398a164-d05c-46a2-b710-66cc6dc6d060",
-          "name": "test"
-        },
-        "sender": {
-          "id": 1,
-          "name": "Carlos Reyes" // Sender es un usuario o el sistema
+      const findRoom = roomId => {
+        for (let i = 0; i < roomsArr.length; i++) {
+          if (roomsArr[i].id === roomId) {
+            return roomsArr[i]
+          }
         }
       }
 
-    const handleSendMessage = (message) => {
-        reset()
-        const messageObj = {...SOCKET_OBJ_2, ...message}
-        messageObj.target.id = roomID
-        messageObj.target.name = roomName
-        client.send(JSON.stringify(messageObj))
+      //---------------------------------------------
+
+      const handleUserJoined = msg => {
+        setUsers(prev => [...prev, msg.sender])
+      }
+
+      const handleUserLeft = msg => {
+        console.log("--------------------------")
+        console.log(msg)
+        console.log("--------------------------")
+        setUsers(prev => prev.filter(value => value.id !== msg.sender.id))
+        handleChatMsg({
+          action: "send-message", 
+          message: msg.sender.name + " left",
+          sender: null,
+          target: null
+        })
+      }
+
+      const handleRoomJoined = obj => {
+        setRoomsArr(prev => [
+          {
+            name: obj.target.name,
+            id: obj.target.id,
+            private: obj.target.private,
+            messages: []
+          }, ...prev])
+      }
+
+      //client.onopen = () => {}
+
+      client.onmessage = e => {
+        let data = e.data
+        let msg = JSON.parse(data)
+        console.log(JSON.parse(data))
+        switch (msg.action) {
+          case 'send-message':
+            handleChatMsg(msg)
+            break
+          case 'user-join':
+            handleUserJoined(msg)
+            break
+          case 'user-left':
+            handleUserLeft(msg)
+            break
+          case 'room-joined':
+            handleRoomJoined(msg)
+            break
+          default:
+            break
+          }
+            
+      }
+
+      client.onclose = () => {
+        /* dispatch({type: 'show-onclose-message'})
+        history.push('/') */
+      }
+    }
+  }, [client, roomsArr])
+
+
+  const sendMessage = (e, room, reset) => {
+    console.log(e)
+    console.log(room)
+    reset()
+    client.send(
+      JSON.stringify({
+        action: 'send-message',
+        message: e.message,
+        target: {
+          id: room.id,
+          name: room.name
+        }
+      })
+    )
+  }
+  
+    const joinRoom = (e) => {
+      reset()
+      client.send(JSON.stringify({ action: 'join-room', message: e.roomInput }))
+    }
+  
+  
+    const handleLeave = () => {
+      dispatch({type: 'clear-all'})
+      /* if (!accessToken) {
+        history.push('/');
+      } */
     }
 
-    useEffect(()=>{
-        if(allMessages){
-            //tienen delay
-            /* console.log(allMessages)
-            console.log(allSenders)
-            console.log(messagesPosition) */
-        }
-    }, [allMessages])
 
+    const list = roomsArr.map((room) => {
+      console.log(roomsArr)
+      return(
+      <ChatRoom
+        client={client}
+        room={room}
+        users={users}
+        messages={room.messages}
+        handleMsg={sendMessage}
+        key={room.id}
+      />
+    )})
 
-//--------------------------------------------------
-    
-    const listMessages = allMessages.map((value, index) => {
-        if(messagesPosition[index] == user_id){
-            return <p className="messages-style messages-to-right" key={index}>{value}</p>
-        } else if (typeof(messagesPosition[index]) === "number" && messagesPosition[index] !== user_id){
-            return <p className="messages-style messages-to-left" key={index}>{value}</p>
-        } else {
-            return <p className="messages-style notification-style" key={index}>{value}</p>
-        }
-    })
-    
-    const listSenders = allSenders.map((value, index) => {
-        
-        if(messagesPosition[index] == user_id){
-            return <p className="senders-style messages-to-right" key={(index + 1) * (-1)}>{value}</p>
-        } else if (typeof(messagesPosition[index]) === "number" && messagesPosition[index] !== user_id){
-            return <p className="senders-style messages-to-left" key={(index + 1) * (-1)}>{value}</p>
-        } else {
-            return <p className="senders-style " key={(index + 1) * (-1)}>{value}</p>
-        }
-    })
-
-
-    useEffect(() => {
-        if(messagesPosition){
-            let newArr = []
-            for(let i=0; i < listMessages.length; i++){
-                newArr.push(listMessages[i])
-                newArr.push(listSenders[i])
-            }
-            //console.log(user_id)
-            console.log("-----------------")
-            console.log(allMessages)
-            console.log(allSenders)
-            console.log(messagesPosition)
-            console.log("-----------------")
-            setConversation(newArr)
-        }
-    }, [messagesPosition])
-
-
-    /* const listConversation = () => {
-        let newArr = [];
-        for(let i=0; i < listMessages.length; i++){
-            newArr.push(listSenders[i])
-            newArr.push(listMessages[i])
-        }
-        console.log(newArr)
-        return <p className="messages-style" >asdsad</p>
-    } */
-
-    return(
+  return (
+      <div>
         <div>
-            <h3>ROOMS:</h3>
-            <div className="room-container">
-                { roomName && <h1 className="room-title">{roomName}</h1> }
-                <div className="connected">
-                <span>● </span>
-                {connectedUsers}
-                </div>
-                <div className="box-chatting">
-                    { conversation }
-                </div>
-                { roomID && 
-                        <form className="message-form" onSubmit={handleSubmit((e) => handleSendMessage(e,reset))} >
-                            <textarea placeholder="Message" {...register("message", { required: true })} ></textarea>
-                            <button type="submit">Send</button>
-                        </form>
-                }
-            </div>
+          <p>{users[0] && "Hello, " + users[0].name}</p>
+          <button type='button' onClick={handleLeave}>Log out</button>
         </div>
-    )
+        <form onSubmit={handleSubmit(joinRoom)}> 
+          <input id="sesion" placeholder="Enter Room Name" {...register('roomInput', {required: true})}/>
+          <button type='submit' >Join</button>
+        </form>
+        <div>
+          {list}
+        </div>
+      </div>
+  )
 }
 
 export default Application
-
-
-
-
-/* data: "{\"action\":\"user-join\",\"message\":\"\",\"target\":null,\"sender\":{\"name\":\"Profe Charly\",\"id\":1}}"
-data: "{\"action\":\"room-joined\",\"message\":\"\",\"target\":{\"name\":\"test\",\"id\":\"37c5566f-fcaa-4469-8a5f-557269a12c90\",\"private\":false},\"sender\":null}"
-data: "{\"action\":\"send-message\",\"message\":\"Profe Charly joined the room\",\"target\":{\"name\":\"test\",\"id\":\"37c5566f-fcaa-4469-8a5f-557269a12c90\",\"private\":false},\"sender\":null}" */

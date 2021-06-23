@@ -1,45 +1,54 @@
-import { useForm } from "react-hook-form"
-import { useSelector, useDispatch } from 'react-redux'
-import { useEffect } from 'react'
-import { useHistory } from 'react-router'
+// import React, {useEffect} from 'react'
+import {Link, useHistory} from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { postLoginThunk } from '../actions/actions';
+import { useEffect, useState } from 'react';
+import {useForm} from 'react-hook-form';
 import Loading from './Loading'
-import { fetchLogin } from '../actions/actions'
 
 const Login = () => {
-      
-    const history = useHistory() 
-    const {handleSubmit, register, reset} = useForm()
-    
-    const dispatch = useDispatch()
-    const login_item = useSelector(state => state.loginReducer.login_item)
-    const error = useSelector(state => state.loginReducer.error)
-    const loading = useSelector(state => state.loginReducer.loading)
+    const {register, handleSubmit, reset} = useForm();
+    const accessToken = useSelector(state => state.accessToken);
+    const error = useSelector(state => state.error);
+    const isLoading = useSelector(state => state.loading);
+    const dispatch = useDispatch();
+    const history = useHistory();
 
-
-    const handleLogin = (loginObj) => {
-        reset()
-        dispatch(fetchLogin(loginObj))
+   useEffect(()=>{
+    if (accessToken) {
+        console.log(accessToken)
+        history.push('/App');
     }
+    console.log(accessToken)
+   }, [history, accessToken])
 
-    useEffect(() => {
-        if(login_item){
-            console.log(login_item)
-            history.push("/home")
-        } else if(error){
-            console.log(error)
-        }
-    }, [login_item, error, history])
+    const handleLogin = (values) => {
+        dispatch(postLoginThunk(values))
+        reset();
+    }
 
 
     return (
-        <div>
-            <form onSubmit={handleSubmit((e) => handleLogin(e,reset))} >
-                <input placeholder="Email" {...register("username", { required: true })} ></input>
-                <input placeholder="Password" {...register("password", { required: true })} ></input>
-                <button type="submit" >Log in</button>
-                {loading ? <Loading /> : <div></div>}
-            </form>
-        </div>
+        <>
+            <div>
+                {
+                    isLoading && 
+                        <div>
+                        <Loading />
+                        </div>
+                } 
+                
+                <div>
+                    <h2>Log in</h2>
+                    <form onSubmit={handleSubmit(handleLogin)}>
+                        <input type="email" {...register('username', {required: true})} placeholder="Email"/>  
+                        <input type="password" {...register('password', {required: true})} placeholder="Password"/>               
+                        <button type="submit" >Login</button>
+                    </form>
+                    { error && <div>{ error }</div>}
+                </div>
+            </div>
+        </>
     )
 }
 
