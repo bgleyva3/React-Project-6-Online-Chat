@@ -1,3 +1,39 @@
+.chat-room-container{
+    background-color: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+    margin: 0.5rem 0;
+}
+
+.chat-room-header{
+    background-color: rgb(231, 99, 124);
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+}
+
+.room-title{
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+.connected-icon{
+    color: rgb(0, 255, 0);
+}
+
+.messages-container{
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    padding: 0.5rem 0;
+    height: 15rem;
+    overflow: scroll;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
 .messages-sub-container{
     margin: 0 0.5rem;
 }
@@ -26,4 +62,29 @@
 .center-message{
     font-size: 0.7rem;
     color: rgba(0, 0, 0, 0.7)
+}
+
+
+.form-messages{
+    background-color: rgb(231, 99, 124);
+    padding: 0.5rem 0;
+    width: 100%;
+    text-align: center;
+    border-radius: 0 0 4px 4px;
+}
+
+.connected-style{
+    margin: 0.5rem auto 0.5rem 0.5rem;
+}
+
+.messages-input{
+    width: auto;
+}
+
+.blue-color{
+    background-color: #4892e0;
+}
+
+.blue-color:hover{
+    background-color: #387fca;
 }

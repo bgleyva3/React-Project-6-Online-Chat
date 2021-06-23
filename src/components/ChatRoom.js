@@ -54,23 +54,24 @@ const ChatRoom = ({room, users, messages, handleMsg}) => {
     }
 
     return ( 
-        <div>
-            <div>
-                <h2>{room.name}</h2>
-                <div>
-                    {users[0] && <span>● </span> }
+        <div className="chat-room-container">
+            <div className="chat-room-header">
+                <h2 className="room-title">{room.name}</h2>
+                <div className="connected-style">
+                    {users[0] && <span className="connected-icon">● </span> }
                     {connectedUsersFormat()}
                 </div>
             </div>
-            <div>
+            <div className="messages-container">
             {message}
             </div>
-            <form onSubmit={handleSubmit((e) => handleMsg(e, room, reset))}>
+            <form className="form-messages" onSubmit={handleSubmit((e) => handleMsg(e, room, reset))}>
                 <input {...register("message", { required: true })}/>
-                <button>SEND</button>
+                <button className="blue-color">SEND</button>
             </form>
         </div>         
     )
 }
+
 
 export default ChatRoom
