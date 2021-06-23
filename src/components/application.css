@@ -1,0 +1,29 @@
+.messages-sub-container{
+    margin: 0 0.5rem;
+}
+
+.sender-style{
+    font-weight: 700;
+    font-size: 0.7rem;
+    margin: 0.5rem 0 -0.5rem 0;
+    display: block
+}
+
+.message-style{
+    margin: 0.5rem 0;
+    display: block;
+    text-align: center;
+}
+
+.right-message{
+    text-align: end;
+}
+
+.left-message{
+    text-align: start;
+}
+
+.center-message{
+    font-size: 0.7rem;
+    color: rgba(0, 0, 0, 0.7)
+}
