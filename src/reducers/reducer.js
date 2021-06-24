@@ -2,7 +2,8 @@
 const INITIAL_STATE = {
     accessToken: null,
     loading: false,
-    error: null
+    error: null,
+    showRegister: false,
 }
 
 const reducer = (state = INITIAL_STATE, action) =>{
@@ -15,6 +16,9 @@ const reducer = (state = INITIAL_STATE, action) =>{
         }
         case 'is-loading':{
             return {...state, loading: action.payload}
+        }
+        case 'show-register': {
+            return {...INITIAL_STATE, showRegister: action.payload}
         }
         case 'clear-all': {
             return {...INITIAL_STATE}

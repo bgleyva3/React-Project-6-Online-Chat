@@ -5,12 +5,14 @@ import { postLoginThunk } from '../actions/actions';
 import { useEffect, useState } from 'react';
 import {useForm} from 'react-hook-form';
 import Loading from './Loading'
+import Register from './Register'
 
 const Login = () => {
     const {register, handleSubmit, reset} = useForm();
     const accessToken = useSelector(state => state.accessToken);
     const error = useSelector(state => state.error);
     const isLoading = useSelector(state => state.loading);
+    const showRegister = useSelector(state => state.showRegister);
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -27,6 +29,10 @@ const Login = () => {
         reset();
     }
 
+    const handleRegister = () => {
+        dispatch({ type: 'show-register', payload: 'true' })
+    }
+
 
     return (
         <>
@@ -37,7 +43,7 @@ const Login = () => {
                         <Loading />
                         </div>
                 } 
-                
+                {showRegister && <Register/>}
                 <div>
                     <h2>Log in</h2>
                     <form onSubmit={handleSubmit(handleLogin)}>
@@ -46,6 +52,7 @@ const Login = () => {
                         <button type="submit" >Login</button>
                     </form>
                     { error && <div>{ error }</div>}
+                    <p className="link-style" onClick={handleRegister}>Create a new account</p>
                 </div>
             </div>
         </>

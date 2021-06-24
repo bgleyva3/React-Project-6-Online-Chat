@@ -26,5 +26,18 @@ export const postLoginThunk = (data) =>{
 
 }
 
-
-//.then(resp=> dispatch({type: 'post-register-success', payload: resp.data}))
+export const postRegisterThunk = (data) =>{
+    console.log(data)
+    return (dispatch) => {
+        dispatch({type: 'is-loading', payload: true})
+        return axios.post(`${baseUrl}/users`, {
+            username: data.username,
+            password: data.password,
+            name: data.name,
+          })
+        .then(() => dispatch(postLoginThunk(data)))
+        .then(() => dispatch({type: 'is-loading', payload: false}))
+        .catch(() => dispatch(getStatusAPI("User already exists")))
+        .then(() => dispatch({type: 'is-loading', payload: false}))
+    }
+}

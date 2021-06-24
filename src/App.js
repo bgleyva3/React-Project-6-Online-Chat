@@ -1,5 +1,6 @@
 import './App.css';
 import './components/application.css'
+import './components/loginRegister.css';
 import {HashRouter as Router, Switch, Route} from 'react-router-dom'
 import Login from './components/Login';
 import Application from './components/Application';
