@@ -54,6 +54,11 @@ const Login = () => {
                     { error && <div>{ error }</div>}
                     <p className="link-style" onClick={handleRegister}>Create a new account</p>
                 </div>
+                <div>
+                    <div>or</div>
+                    <button onClick={() => handleLogin({username: "guest1@gmail.com", password: "test123"})}>Join as Guest 1</button>
+                    <button onClick={() => handleLogin({username: "guest2@gmail.com", password: "test123"})}>Join as Guest 2</button>
+                </div>
             </div>
         </>
     )
