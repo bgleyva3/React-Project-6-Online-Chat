@@ -54,7 +54,7 @@ const Login = () => {
                     <form className="form-style" onSubmit={handleSubmit(handleLogin)}>
                         <input className="input-style" type="email" {...register('username', {required: true})} placeholder="Email"/>  
                         <input className="input-style" type="password" {...register('password', {required: true})} placeholder="Password"/>               
-                        <button className="button-style green-color" type="submit" >Enter</button>
+                        <button className="button-style green-color" type="submit" ><i className="fas fa-sign-in-alt"></i></button>
                     </form>
                     { error && <div className="incorrect-message">{ error }</div>}
                     <p className="link-style" onClick={handleRegister}>Create a new account</p>
