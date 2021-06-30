@@ -167,16 +167,16 @@ const Application = ({register, handleSubmit, reset}) => {
     )})
 
   return (
-      <div>
-        <div>
-          <p>{users[0] && "Hello, " + users[0].name}</p>
-          <button type='button' onClick={handleLeave}>Log out</button>
+      <div className="background-application">
+        <div className="header-application">
+          <p className="hello-text">{users[0] && "Hello, " + users[0].name}</p>
+          <button style={{padding: "0.5rem 0.8rem"}} className="button-style red-color" type='button' onClick={handleLeave}><i class="fas fa-sign-out-alt"></i></button>
         </div>
-        <form onSubmit={handleSubmit(joinRoom)}> 
-          <input id="sesion" placeholder="Enter Room Name" {...register('roomInput', {required: true})}/>
-          <button type='submit' >Join</button>
+        <form className="room-form" onSubmit={handleSubmit(joinRoom)}> 
+          <input style={{margin: "0"}} className="input-style" id="sesion" placeholder="Enter Room Name" {...register('roomInput', {required: true})}/>
+          <button className="text-button green-color no-margin" type='submit' >Join</button>
         </form>
-        <div>
+        <div className="chat-room-granpa">
           {list}
         </div>
       </div>

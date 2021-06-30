@@ -1,3 +1,49 @@
+.background-application{
+    background-image: linear-gradient(#f6d365, #fda085);
+    min-height: 100vh;
+    height: 100%;
+}
+
+.header-application{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: #f6d365;
+}
+
+.hello-text{
+    font-weight: 500;
+    color: rgb(97, 86, 79)
+}
+
+.room-form{
+    text-align: center;
+    background-color: rgb(180, 180, 180);
+    padding: 0.5rem 0;
+    margin-bottom: 1.5rem
+}
+
+.chat-room-granpa{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.red-color{
+    background-color: #dc3545;
+}
+
+.red-color:hover{
+    background-color: #be2b3a;
+}
+
+.no-margin{
+    margin: 0;
+}
+
+/* ---------------------CHAT ROOMS------------------ */
+
 .chat-room-container{
     background-color: none;
     display: flex;
@@ -87,4 +133,16 @@
 
 .blue-color:hover{
     background-color: #387fca;
+}
+
+@media (max-width: 1100px) {
+    .chat-room-container{
+        width: 45%;
+    }
+}
+
+@media (max-width: 700px) {
+    .chat-room-container{
+        width: 95%;
+    }
 }
