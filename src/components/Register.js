@@ -17,19 +17,19 @@ const Register = () => {
         reset();
     }
     return (
-        <div>
-            <div onClick={handleRegister}></div>
-            <div> 
-            <i onClick={handleRegister}></i>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <h3 >Register</h3>
-                    <div>
-                        <input type="text" {...register('name',  {required: true})} placeholder="username" />
-                        <input type="email" {...register('username', {required: true})} placeholder="Email" />
-                        <input type="password" {...register('password',  {required: true})} placeholder="Password" />
+        <div className="register-parent">
+            <div className="register-background" onClick={handleRegister}></div>
+            <div className="register-container"> 
+            <i className="fas fa-2x fa-times-circle cancel-button" onClick={handleRegister}></i>
+                <form className="register-form" onSubmit={handleSubmit(onSubmit)}>
+                    <h3 className="form-title">Register</h3>
+                    <div className="register-fields">
+                        <input className="input-register" type="text" {...register('name',  {required: true})} placeholder="username" />
+                        <input className="input-register" type="email" {...register('username', {required: true})} placeholder="Email" />
+                        <input className="input-register" type="password" {...register('password',  {required: true})} placeholder="Password" />
                     </div>
                         {error && <div style={{color: "red", marginBottom: "1rem"}} role="alert">{ error }</div>}
-                        <button>REGISTER</button>
+                        <button className="button-style green-color">REGISTER</button>
                 </form>
             </div>
         </div>
