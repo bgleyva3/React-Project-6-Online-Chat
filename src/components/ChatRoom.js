@@ -66,8 +66,8 @@ const ChatRoom = ({room, users, messages, handleMsg}) => {
             {message}
             </div>
             <form className="form-messages" onSubmit={handleSubmit((e) => handleMsg(e, room, reset))}>
-                <input {...register("message", { required: true })}/>
-                <button className="blue-color">SEND</button>
+                <input style={{margin: "0"}} className="messages-input input-style" {...register("message", { required: true })}/>
+                <button style={{padding: "0.5rem 0.8rem"}} className="button-style blue-color"><i class="fas fa-paper-plane"></i></button>
             </form>
         </div>         
     )

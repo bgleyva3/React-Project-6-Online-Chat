@@ -174,7 +174,7 @@ const Application = ({register, handleSubmit, reset}) => {
         </div>
         <form className="room-form" onSubmit={handleSubmit(joinRoom)}> 
           <input style={{margin: "0"}} className="input-style" id="sesion" placeholder="Enter Room Name" {...register('roomInput', {required: true})}/>
-          <button className="text-button green-color no-margin" type='submit' >Join</button>
+          <button style={{margin: "0"}} className="text-button green-color no-margin" type='submit' >Join</button>
         </form>
         <div className="chat-room-granpa">
           {list}
