@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {useForm} from 'react-hook-form';
 
-const ChatRoom = ({room, users, messages, handleMsg}) => {
+const ChatRoom = ({room, users, messages, handleMsg, handleClose}) => {
     const {register, handleSubmit, reset} = useForm();
     const hour = new Date();
     /* console.log("-----users-----")
@@ -56,6 +56,7 @@ const ChatRoom = ({room, users, messages, handleMsg}) => {
     return ( 
         <div className="chat-room-container">
             <div className="chat-room-header">
+                <button className="close-button" onClick={() => handleClose(room)}><i className="fas fa-window-close"></i></button>
                 <h2 className="room-title">{room.name}</h2>
                 <div className="connected-style">
                     {users[0] && <span className="connected-icon">● </span> }
@@ -67,7 +68,7 @@ const ChatRoom = ({room, users, messages, handleMsg}) => {
             </div>
             <form className="form-messages" onSubmit={handleSubmit((e) => handleMsg(e, room, reset))}>
                 <input style={{margin: "0"}} className="messages-input input-style" {...register("message", { required: true })}/>
-                <button style={{padding: "0.5rem 0.8rem"}} className="button-style blue-color"><i class="fas fa-paper-plane"></i></button>
+                <button style={{padding: "0.5rem 0.8rem"}} className="button-style blue-color"><i className="fas fa-paper-plane"></i></button>
             </form>
         </div>         
     )

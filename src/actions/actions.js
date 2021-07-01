@@ -13,7 +13,7 @@ export const getStatusAPI = (message) =>{
 
 export const postLoginThunk = (data) =>{
     return (dispatch) => {
-        setTimeout(function(){ dispatch({type: 'problems-message', payload: true}) }, 8000);
+        setTimeout(function(){ dispatch({type: 'problems-message', payload: true}) }, 12000);
         dispatch({type: 'is-loading', payload: true})
         return axios.post(`${baseUrl}/login`, {
             username: data.username,

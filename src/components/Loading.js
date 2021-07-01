@@ -9,7 +9,7 @@ const Loading = () => {
     return (
         <div align='center'>
             <Loader className='loader-style' type="TailSpin" color="#00BFFF" height={80} width={80} />
-            {problemsMessage && <h3 style={{width:"70vw"}}>We are experiencing problems connecting to server</h3>}
+            {problemsMessage && <h3 className="problems-message">We are experiencing problems connecting to server</h3>}
         </div>
     )
 }

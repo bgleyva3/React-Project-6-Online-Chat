@@ -18,6 +18,13 @@
   margin-top: 30vh;
 }
 
+.problems-message{
+  width: 70vw;
+  color: white;
+  margin-top: 1rem;
+  text-shadow: 0 0 2px black, 0 0 2px black, 0 0 2px black, 0 0 2px black;
+}
+
 /* .main-title{
   position: absolute;
   top: 0.8em;

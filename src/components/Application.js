@@ -42,7 +42,9 @@ const Application = ({register, handleSubmit, reset}) => {
           room = roomsArr[Object.keys(roomsArr)[0]]
         }
         console.log(room)
-        room.messages = [msgObj, ...room.messages]
+        if(room){
+          room.messages = [msgObj, ...room.messages]
+        }
         console.log(room.messages)
         setRoomsArr(prev =>
           prev.map(value => {
@@ -140,34 +142,45 @@ const Application = ({register, handleSubmit, reset}) => {
       })
     )
   }
+
+  const closeChat = (room) => {
+    console.log(room)
+    const arrDestructure = [...roomsArr]
+    const findRoom = objRoom => objRoom.name === room.name
+    const deleteIndex = arrDestructure.findIndex(findRoom)
+    console.log(deleteIndex)
+    arrDestructure.splice(deleteIndex, 1)
+    setRoomsArr(arrDestructure)
+  }
   
-    const joinRoom = (e) => {
-      reset()
-      setRoomFormCenter(false)
-      client.send(JSON.stringify({ action: 'join-room', message: e.roomInput }))
-    }
-  
-  
-    const handleLeave = () => {
-      dispatch({type: 'clear-all'})
-      /* if (!accessToken) {
-        history.push('/');
-      } */
-    }
+  const joinRoom = (e) => {
+    reset()
+    setRoomFormCenter(false)
+    client.send(JSON.stringify({ action: 'join-room', message: e.roomInput }))
+  }
 
 
-    const list = roomsArr.map((room) => {
-      console.log(roomsArr)
-      return(
-      <ChatRoom
-        client={client}
-        room={room}
-        users={users}
-        messages={room.messages}
-        handleMsg={sendMessage}
-        key={room.id}
-      />
-    )})
+  const handleLeave = () => {
+    dispatch({type: 'clear-all'})
+    /* if (!accessToken) {
+      history.push('/');
+    } */
+  }
+
+
+  const list = roomsArr.map((room) => {
+    console.log(roomsArr)
+    return(
+    <ChatRoom
+      client={client}
+      room={room}
+      users={users}
+      messages={room.messages}
+      handleMsg={sendMessage}
+      handleClose={closeChat}
+      key={room.id}
+    />
+  )})
 
   return (
       <div className="background-application">

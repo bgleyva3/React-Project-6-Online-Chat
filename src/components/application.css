@@ -76,12 +76,34 @@
     align-items: center;
     width: 30%;
     margin: 0.5rem 0;
+    position: relative
 }
 
 .chat-room-header{
     background-color: rgb(231, 99, 124);
     width: 100%;
     border-radius: 4px 4px 0 0;
+}
+
+.close-button{
+    position: absolute;
+    right: 0.8rem;
+    top: 0.8rem;
+    border: none;
+    cursor: pointer;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+}
+
+.close-button i{
+    color: #dc3545;
+    padding: 0;
+    margin:0;
+    transform: scale(2);
+}
+
+.close-button i:hover{
+    color: #be2b3a;
 }
 
 .room-title{
