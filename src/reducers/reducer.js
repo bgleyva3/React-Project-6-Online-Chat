@@ -4,6 +4,7 @@ const INITIAL_STATE = {
     loading: false,
     error: null,
     showRegister: false,
+    problemsMessage: false
 }
 
 const reducer = (state = INITIAL_STATE, action) =>{
@@ -19,6 +20,9 @@ const reducer = (state = INITIAL_STATE, action) =>{
         }
         case 'show-register': {
             return {...INITIAL_STATE, showRegister: action.payload}
+        }
+        case 'problems-message': {
+            return {...state, problemsMessage: action.payload}
         }
         case 'clear-all': {
             return {...INITIAL_STATE}

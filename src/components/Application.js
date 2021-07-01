@@ -7,6 +7,7 @@ const Application = ({register, handleSubmit, reset}) => {
   const [client, setClient] = useState(null);
   const [users, setUsers] = useState([]);
   const [roomsArr, setRoomsArr] = useState([]);
+  const [roomFormCenter, setRoomFormCenter] = useState(true)
   const accessToken = useSelector(state => state.accessToken)
   const dispatch = useDispatch();
 
@@ -18,6 +19,7 @@ const Application = ({register, handleSubmit, reset}) => {
         new WebSocket('wss://acapp.herokuapp.com/ws', ['token', encoded])
       )
     }
+    dispatch({type: 'problems-message', payload: false})
   }, [accessToken])
   
 
@@ -141,6 +143,7 @@ const Application = ({register, handleSubmit, reset}) => {
   
     const joinRoom = (e) => {
       reset()
+      setRoomFormCenter(false)
       client.send(JSON.stringify({ action: 'join-room', message: e.roomInput }))
     }
   
@@ -168,14 +171,24 @@ const Application = ({register, handleSubmit, reset}) => {
 
   return (
       <div className="background-application">
-        <div className="header-application">
+        <div className="header-application shadow-bottom">
           <p className="hello-text">{users[0] && "Hello, " + users[0].name}</p>
-          <button style={{padding: "0.5rem 0.8rem"}} className="button-style red-color" type='button' onClick={handleLeave}><i class="fas fa-sign-out-alt"></i></button>
+          <button style={{padding: "0.5rem 0.8rem"}} className="button-style red-color" type='button' onClick={handleLeave}><i className="fas fa-sign-out-alt"></i></button>
         </div>
-        <form className="room-form" onSubmit={handleSubmit(joinRoom)}> 
-          <input style={{margin: "0"}} className="input-style" id="sesion" placeholder="Enter Room Name" {...register('roomInput', {required: true})}/>
-          <button style={{margin: "0"}} className="text-button green-color no-margin" type='submit' >Join</button>
-        </form>
+        {
+          roomFormCenter ? 
+            <div className="room-form-container">
+              <form className="room-form centered-form shadow-bottom" onSubmit={handleSubmit(joinRoom)}> 
+                <input style={{margin: "0"}} className="input-style" id="sesion" placeholder="Enter Room Name" {...register('roomInput', {required: true})}/>
+                <button style={{margin: "0"}} className="text-button green-color no-margin" type='submit' >Join</button>
+              </form>
+            </div>
+            :
+            <form className="room-form" onSubmit={handleSubmit(joinRoom)}> 
+              <input style={{margin: "0"}} className="input-style" id="sesion" placeholder="Enter Room Name" {...register('roomInput', {required: true})}/>
+              <button style={{margin: "0"}} className="text-button green-color no-margin" type='submit' >Join</button>
+            </form>
+        }
         <div className="chat-room-granpa">
           {list}
         </div>
