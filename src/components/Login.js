@@ -36,7 +36,7 @@ const Login = () => {
 
     return (
         <>
-           
+           {showOncloseMessage && <h3 style={{textAlign: "center"}}>Sesion closed due to 2 min of inactivity</h3>}
             <div className="center-container">
                 {
                     isLoading && 

@@ -13,13 +13,13 @@ const ChatRoom = ({room, users, messages, handleMsg, handleClose}) => {
         console.log(users)
         return(
             <div className="messages-sub-container" key={index}>
-                {   msg.sender && msg.sender.name === users[0].name &&
+                {   msg.sender && users[0] && msg.sender.name === users[0].name &&
                     <>
                     <p className="sender-style right-message">{msg.sender.name}</p>
                     <p className="message-style right-message">{msg.message}</p>
                     </>
                 }
-                {   msg.sender && msg.sender.name !== users[0].name &&
+                {   msg.sender && users[0] && msg.sender.name !== users[0].name &&
                     <>
                     <p className="sender-style left-message">{msg.sender.name}</p>
                     <p className="message-style left-message">{msg.message}</p>

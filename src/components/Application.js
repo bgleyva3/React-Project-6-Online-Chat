@@ -119,9 +119,10 @@ const Application = ({register, handleSubmit, reset}) => {
             
       }
 
-      client.onclose = () => {
-        /* dispatch({type: 'show-onclose-message'})
-        history.push('/') */
+      client.onclose = (e) => {
+        console.log(e)
+        dispatch({type: 'show-onclose-message'})
+        history.push('/')
       }
     }
   }, [client, roomsArr])
