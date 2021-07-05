@@ -27,29 +27,19 @@ const Application = ({register, handleSubmit, reset}) => {
   // [client, roomsArr] dependencies
   useEffect(() => {
     if (client) {
-      
-      //--------------------------------------------
       const handleChatMsg = msgObj => {
-        /* console.log(roomsArr)
-        console.log(msgObj) */
         let room = {};
         if(msgObj.target){
-          console.log("-1-")
           room = findRoom(msgObj.target.id)
         } else {
-          console.log("-2-")
-          /* console.log(roomsArr)
-          console.log(Object.keys(roomsArr)[0]) */
           room = roomsArr[Object.keys(roomsArr)[0]]
         }
-        console.log(room)
         if(room){
           room.messages = [msgObj, ...room.messages]
         }
-        console.log(room.messages)
         setRoomsArr(prev =>
           prev.map(value => {
-            if (value.name === room.name) {
+            if (room && value.name === room.name) {
               return room
             }
 
@@ -73,9 +63,6 @@ const Application = ({register, handleSubmit, reset}) => {
       }
 
       const handleUserLeft = msg => {
-        console.log("--------------------------")
-        console.log(msg)
-        console.log("--------------------------")
         setUsers(prev => prev.filter(value => value.id !== msg.sender.id))
         handleChatMsg({
           action: "send-message", 
@@ -86,8 +73,6 @@ const Application = ({register, handleSubmit, reset}) => {
       }
 
       const handleRoomJoined = obj => {
-        console.log("room-joined", obj)
-        console.log(roomsArr)
         setRoomsArr(prev => [
           {
             name: obj.target.name,
@@ -122,7 +107,6 @@ const Application = ({register, handleSubmit, reset}) => {
       }
 
       client.onclose = (e) => {
-        console.log(e)
         dispatch({type: 'show-onclose-message'})
         history.push('/')
       }
@@ -131,8 +115,6 @@ const Application = ({register, handleSubmit, reset}) => {
 
 
   const sendMessage = (e, room, reset) => {
-    console.log(e)
-    console.log(room)
     reset()
     client.send(
       JSON.stringify({
@@ -147,11 +129,9 @@ const Application = ({register, handleSubmit, reset}) => {
   }
 
   const closeChat = (room) => {
-    console.log(room)
     const arrDestructure = [...roomsArr]
     const findRoom = elem => elem.name === room.name
     const deleteIndex = arrDestructure.findIndex(findRoom)
-    console.log(deleteIndex)
     setDeletedRooms([...arrDestructure.splice(deleteIndex, 1), ...deletedRooms])
     setRoomsArr(arrDestructure)
   }
@@ -164,6 +144,7 @@ const Application = ({register, handleSubmit, reset}) => {
     const deleteIndex = arrDestructure.findIndex(findRoom)
     if(deleteIndex > -1){
       setRoomsArr([...arrDestructure.splice(deleteIndex, 1), ...roomsArr])
+      setDeletedRooms(arrDestructure)
     } else {
       client.send(JSON.stringify({ action: 'join-room', message: e.roomInput }))
     }
@@ -179,7 +160,6 @@ const Application = ({register, handleSubmit, reset}) => {
 
 
   const list = roomsArr.map((room) => {
-    console.log(roomsArr)
     return(
     <ChatRoom
       client={client}

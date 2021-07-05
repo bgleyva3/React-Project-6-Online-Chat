@@ -19,10 +19,8 @@ const Login = () => {
 
    useEffect(()=>{
     if (accessToken) {
-        console.log(accessToken)
         history.push('/App');
     }
-    console.log(accessToken)
    }, [history, accessToken])
 
     const handleLogin = (values) => {

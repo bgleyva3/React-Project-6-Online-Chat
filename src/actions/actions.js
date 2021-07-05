@@ -28,7 +28,6 @@ export const postLoginThunk = (data) =>{
 }
 
 export const postRegisterThunk = (data) =>{
-    console.log(data)
     return (dispatch) => {
         dispatch({type: 'is-loading', payload: true})
         return axios.post(`${baseUrl}/users`, {

@@ -39,7 +39,6 @@ const ChatRoom = ({room, users, messages, handleMsg, handleClose}) => {
     const connectedUsersFormat = () => {
         const newArr = [...connectedUsers]
         if(connectedUsers.length > 1){
-            console.log("entró")
             for(let i=0; i < connectedUsers.length -1; i++){
                 newArr.splice((i*2 + 1), 0, <span>,</span>)
             }
