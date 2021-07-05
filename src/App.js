@@ -9,7 +9,6 @@ import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   const {register, handleSubmit, reset, formState:{errors}} = useForm();
-  console.log("YIIIIIIIIIIIOO")
   return (
     <Router>
       <Switch>

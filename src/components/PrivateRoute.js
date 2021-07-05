@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 const PrivateRoute = ({children, ...props})=>{  
 
     const accessToken = useSelector(state => state.accessToken) 
-    console.log("LEEEEEEEEL")
 
     return <Route {...props} 
     render={({location})=> accessToken ? (children) 

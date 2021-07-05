@@ -4,13 +4,9 @@ import {useForm} from 'react-hook-form';
 const ChatRoom = ({room, users, messages, handleMsg, handleClose}) => {
     const {register, handleSubmit, reset} = useForm();
     const hour = new Date();
-    /* console.log("-----users-----")
-    console.log(users) */
 
 
     const message = messages.map((msg, index)=>{
-        console.log(msg)
-        console.log(users)
         return(
             <div className="messages-sub-container" key={index}>
                 {   msg.sender && users[0] && msg.sender.name === users[0].name &&
@@ -37,12 +33,10 @@ const ChatRoom = ({room, users, messages, handleMsg, handleClose}) => {
     const connectedUsers = users.map((user, index) => {
         return(
             <span key={index}>{" " + user.name}</span>
-            //user.name
         )
     })
 
     const connectedUsersFormat = () => {
-        console.log(connectedUsers)
         const newArr = [...connectedUsers]
         if(connectedUsers.length > 1){
             console.log("entró")

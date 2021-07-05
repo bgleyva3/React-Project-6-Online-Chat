@@ -8,6 +8,7 @@ const Application = ({register, handleSubmit, reset}) => {
   const [users, setUsers] = useState([]);
   const [roomsArr, setRoomsArr] = useState([]);
   const [roomFormCenter, setRoomFormCenter] = useState(true)
+  const [deletedRooms, setDeletedRooms] = useState([])
   const accessToken = useSelector(state => state.accessToken)
   const dispatch = useDispatch();
 
@@ -85,6 +86,8 @@ const Application = ({register, handleSubmit, reset}) => {
       }
 
       const handleRoomJoined = obj => {
+        console.log("room-joined", obj)
+        console.log(roomsArr)
         setRoomsArr(prev => [
           {
             name: obj.target.name,
@@ -99,7 +102,6 @@ const Application = ({register, handleSubmit, reset}) => {
       client.onmessage = e => {
         let data = e.data
         let msg = JSON.parse(data)
-        console.log(JSON.parse(data))
         switch (msg.action) {
           case 'send-message':
             handleChatMsg(msg)
@@ -147,17 +149,24 @@ const Application = ({register, handleSubmit, reset}) => {
   const closeChat = (room) => {
     console.log(room)
     const arrDestructure = [...roomsArr]
-    const findRoom = objRoom => objRoom.name === room.name
+    const findRoom = elem => elem.name === room.name
     const deleteIndex = arrDestructure.findIndex(findRoom)
     console.log(deleteIndex)
-    arrDestructure.splice(deleteIndex, 1)
+    setDeletedRooms([...arrDestructure.splice(deleteIndex, 1), ...deletedRooms])
     setRoomsArr(arrDestructure)
   }
   
   const joinRoom = (e) => {
     reset()
     setRoomFormCenter(false)
-    client.send(JSON.stringify({ action: 'join-room', message: e.roomInput }))
+    const arrDestructure = [...deletedRooms]
+    const findRoom = elem => elem.name === e.roomInput
+    const deleteIndex = arrDestructure.findIndex(findRoom)
+    if(deleteIndex > -1){
+      setRoomsArr([...arrDestructure.splice(deleteIndex, 1), ...roomsArr])
+    } else {
+      client.send(JSON.stringify({ action: 'join-room', message: e.roomInput }))
+    }
   }
 
 
