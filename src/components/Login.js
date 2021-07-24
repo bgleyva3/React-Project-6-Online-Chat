@@ -45,7 +45,7 @@ const Login = () => {
                 {showRegister && <Register/>}
                 <div className="main-title">
                     <h3 style={{textAlign: "center", marginBottom: "-2rem", fontWeight:"500"}}>Online</h3>
-                    <h1>Chat Rooms</h1>
+                    <h1 className="chat-room-title">Chat Rooms</h1>
                 </div>
                 <div className="form-container">
                     <h2 className="form-title">Log in</h2>

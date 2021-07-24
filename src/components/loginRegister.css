@@ -203,3 +203,26 @@
   border-radius: 50%;
   cursor: pointer;
 }
+
+
+@media (max-width: 900px) {
+  .chat-room-title{
+    text-align: center;
+    font-size: 1.5em;
+    margin-top: 0.2em
+  }
+
+  .form-style{
+    flex-direction: column;
+  }
+
+
+  .form-style input {
+    margin-bottom: 0.5em;
+    text-align: center;
+  }
+
+  .form-style button{
+    padding: 0.5em 0;
+  }
+}
